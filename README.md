@@ -38,6 +38,9 @@ var intFuncType = DelegateTypeBuilder.Create()
 
 var intFn = DynamicCompiler.CompileFunctionNew(intFuncType, code);
 
+var intResult = (int)intFn.DynamicInvoke(7, 6);
+
+Console.WriteLine($"Function body:\r\n'{code}'");
 Console.WriteLine($"Function result is: {intResult}");
 ```
 
