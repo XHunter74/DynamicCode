@@ -50,7 +50,7 @@ public class CompilerUtils
             if (match)
                 return method.Identifier.Text;
         }
-        throw new InvalidOperationException($"No method matching delegate {delegateType.Name} found in syntax tree.");
+        throw new MissingMethodException($"No method matching delegate {delegateType.Name} found in syntax tree.");
     }
 
     private static readonly Dictionary<string, string> CSharpToClrTypeMap = new()

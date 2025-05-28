@@ -46,7 +46,7 @@ public class CompilerUtilsTests
     {
         var code = @"public class MyClass { public static int Calc(int x) { return x; } }";
         var syntaxTree = CSharpSyntaxTree.ParseText(code);
-        Assert.Throws<InvalidOperationException>(() => CompilerUtils.ExtractMethodNameMatchingDelegate(typeof(Func<int, int, int>), syntaxTree));
+        Assert.Throws<MissingMethodException>(() => CompilerUtils.ExtractMethodNameMatchingDelegate(typeof(Func<int, int, int>), syntaxTree));
     }
 
     [Fact(DisplayName = "ExtractMethodNameMatchingDelegate matches C# alias types to CLR types")]
