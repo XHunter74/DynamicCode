@@ -1,9 +1,11 @@
-﻿using Microsoft.CodeAnalysis;
+﻿// Ignore Spelling: Utils
+
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace DynamicCode.Compiler;
 
-internal class CompilerUtils
+public class CompilerUtils
 {
     public static string ExtractSingleClassName(SyntaxTree syntaxTree)
     {
