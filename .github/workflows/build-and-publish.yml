@@ -1,0 +1,85 @@
+name: Build, Test, Publish NuGet
+
+on:
+  push:
+    branches:
+      - master
+    # tags:
+    #   - "v*"
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Detect version tag
+      id: detect-version
+      run: |
+        if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+          echo "IS_TAG=true" >> $GITHUB_ENV
+          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+        else
+          echo "IS_TAG=false" >> $GITHUB_ENV
+        fi
+
+    - name: Check for release notes
+      id: check-release-notes
+      run: |
+        if [ -f release-notes.txt ]; then
+          echo "RELEASE_NOTES_EXISTS=true" >> $GITHUB_ENV
+          RELEASE_NOTES=$(sed ':a;N;$!ba;s/\n/\\n/g' release-notes.txt)
+          echo "RELEASE_NOTES=$RELEASE_NOTES" >> $GITHUB_ENV
+        else
+          echo "RELEASE_NOTES_EXISTS=false" >> $GITHUB_ENV
+        fi
+
+    - name: Update version and release notes in .csproj (only on tag)
+      if: env.IS_TAG == 'true'
+      run: |
+        sed -i "s|<Version>.*</Version>|<Version>${VERSION}</Version>|" CQRSMediatr/CQRSMediatr.csproj
+
+        if [ "$RELEASE_NOTES_EXISTS" = "true" ]; then
+          RELEASE_NOTES_ESCAPED=$(printf '%s\n' "$RELEASE_NOTES" | sed 's/[&/\]/\\&/g')
+          sed -i "s|<PackageReleaseNotes>.*</PackageReleaseNotes>|<PackageReleaseNotes>${RELEASE_NOTES_ESCAPED}</PackageReleaseNotes>|" CQRSMediatr/CQRSMediatr.csproj
+        fi
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build library
+      run: dotnet build DynamicCode/DynamicCode.csproj --configuration Release --no-restore
+
+    - name: Build test project
+      run: dotnet build DynamicCode.Test/DynamicCode.Test.csproj --configuration Release
+
+    - name: Run tests
+      run: dotnet test DynamicCode.Test/DynamicCode.Test.csproj --configuration Release --no-build --verbosity normal
+
+    # - name: Pack NuGet package (only on tag)
+    #   if: env.IS_TAG == 'true'
+    #   run: |
+    #     if [ "$RELEASE_NOTES_EXISTS" = "true" ]; then
+    #       dotnet pack CQRSMediatr/CQRSMediatr.csproj --configuration Release --no-build \
+    #         -p:PackageVersion=$VERSION \
+    #         -p:PackageReleaseNotes="$RELEASE_NOTES"
+    #     else
+    #       dotnet pack CQRSMediatr/CQRSMediatr.csproj --configuration Release --no-build \
+    #         -p:PackageVersion=$VERSION
+    #     fi
+
+    # - name: Publish to NuGet (only on tag)
+    #   if: env.IS_TAG == 'true'
+    #   env:
+    #     NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+    #   run: |
+    #     dotnet nuget push CQRSMediatr/bin/Release/*.nupkg \
+    #       --api-key $NUGET_API_KEY \
+    #       --source https://api.nuget.org/v3/index.json
