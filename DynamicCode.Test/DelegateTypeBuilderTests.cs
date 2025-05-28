@@ -4,7 +4,7 @@ namespace DynamicCode.Test;
 
 public class DelegateTypeBuilderTests
 {
-    [Fact]
+    [Fact(DisplayName = "BuildFuncType returns Func<int, string> for one input and one output")]
     public void BuildFuncType_WithOneInput_ReturnsFuncType()
     {
         var type = DelegateTypeBuilder.Create()
@@ -14,7 +14,7 @@ public class DelegateTypeBuilderTests
         Assert.Equal(typeof(Func<int, string>), type);
     }
 
-    [Fact]
+    [Fact(DisplayName = "BuildFuncType returns Func<int, int, int> for two inputs and one output")]
     public void BuildFuncType_WithTwoInputs_ReturnsFuncType()
     {
         var type = DelegateTypeBuilder.Create()
@@ -25,14 +25,14 @@ public class DelegateTypeBuilderTests
         Assert.Equal(typeof(Func<int, int, int>), type);
     }
 
-    [Fact]
+    [Fact(DisplayName = "BuildFuncType throws InvalidOperationException if output is not specified")]
     public void BuildFuncType_WithoutOutput_Throws()
     {
         var builder = DelegateTypeBuilder.Create().AddInput(typeof(int));
         Assert.Throws<InvalidOperationException>(() => builder.BuildFuncType());
     }
 
-    [Fact]
+    [Fact(DisplayName = "BuildFuncType throws NotSupportedException if too many inputs are specified")]
     public void BuildFuncType_TooManyInputs_Throws()
     {
         var builder = DelegateTypeBuilder.Create();
@@ -41,7 +41,7 @@ public class DelegateTypeBuilderTests
         Assert.Throws<NotSupportedException>(() => builder.BuildFuncType());
     }
 
-    [Fact]
+    [Fact(DisplayName = "BuildActionType returns Action<int, string> for two inputs and no output")]
     public void BuildActionType_WithInputs_ReturnsActionType()
     {
         var type = DelegateTypeBuilder.Create()
@@ -51,7 +51,7 @@ public class DelegateTypeBuilderTests
         Assert.Equal(typeof(Action<int, string>), type);
     }
 
-    [Fact]
+    [Fact(DisplayName = "BuildActionType throws InvalidOperationException if output is specified")]
     public void BuildActionType_WithOutput_Throws()
     {
         var builder = DelegateTypeBuilder.Create()
@@ -60,7 +60,7 @@ public class DelegateTypeBuilderTests
         Assert.Throws<InvalidOperationException>(() => builder.BuildActionType());
     }
 
-    [Fact]
+    [Fact(DisplayName = "BuildActionType throws NotSupportedException if too many inputs are specified")]
     public void BuildActionType_TooManyInputs_Throws()
     {
         var builder = DelegateTypeBuilder.Create();
