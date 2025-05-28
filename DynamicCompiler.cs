@@ -64,27 +64,15 @@ public class DynamicCompiler
         var delegateInvoke = typeof(T).GetMethod("Invoke");
         var delegateParams = delegateInvoke.GetParameters();
         var delegateReturn = delegateInvoke.ReturnType;
-
-        var compilation = CSharpCompilation.Create(
-            "TempAssembly",
-            syntaxTrees: [syntaxTree],
-            references: AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
-                .Select(a => MetadataReference.CreateFromFile(a.Location))
-        );
-        var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var root = syntaxTree.GetRoot();
         var methodDecls = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
+
         foreach (var method in methodDecls)
         {
-            var methodSymbol = semanticModel.GetDeclaredSymbol(method);
-            if (methodSymbol == null)
-                continue;
             // Compare return type
-            if (methodSymbol.ReturnType.ToDisplayString() != delegateReturn.FullName &&
-                methodSymbol.ReturnType.ToDisplayString() != delegateReturn.Name &&
-                methodSymbol.ReturnType.Name != delegateReturn.Name &&
-                methodSymbol.ReturnType.SpecialType.ToString().Replace("System_", "System.") != delegateReturn.FullName)
+            var methodReturnType = method.ReturnType.ToString();
+            var clrReturnType = CompilerUtils.GetClrTypeName(methodReturnType);
+            if (clrReturnType != delegateReturn.Name && clrReturnType != delegateReturn.FullName)
                 continue;
             var parameters = method.ParameterList.Parameters;
             if (parameters.Count != delegateParams.Length)
@@ -92,12 +80,10 @@ public class DynamicCompiler
             bool match = true;
             for (int i = 0; i < parameters.Count; i++)
             {
-                var paramSymbol = semanticModel.GetDeclaredSymbol(parameters[i]);
+                var paramType = parameters[i].Type?.ToString();
+                var clrParamType = CompilerUtils.GetClrTypeName(paramType);
                 var delegateParamType = delegateParams[i].ParameterType;
-                if (paramSymbol == null ||
-                    (paramSymbol.Type.ToDisplayString() != delegateParamType.FullName &&
-                     paramSymbol.Type.Name != delegateParamType.Name &&
-                     paramSymbol.Type.SpecialType.ToString().Replace("System_", "System.") != delegateParamType.FullName))
+                if (clrParamType != delegateParamType.Name && clrParamType != delegateParamType.FullName)
                 {
                     match = false;
                     break;
