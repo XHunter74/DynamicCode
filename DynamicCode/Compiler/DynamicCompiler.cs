@@ -6,6 +6,8 @@ namespace DynamicCode.Compiler;
 
 public class DynamicCompiler
 {
+    private const string AssemblyName = "DynamicAssembly";
+
     public static Delegate CompileFunction(Type delegateType, string code)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(code);
@@ -18,7 +20,7 @@ public class DynamicCompiler
             .Cast<MetadataReference>();
 
         var compilation = CSharpCompilation.Create(
-            assemblyName: "DynamicAssembly",
+            assemblyName: AssemblyName,
             syntaxTrees: [syntaxTree],
             references: references,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)

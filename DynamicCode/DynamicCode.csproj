@@ -14,6 +14,7 @@
     <RepositoryUrl>https://github.com/XHunter74/DynamicCode</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Library, Roslyn, Dynamic-Code-Execution </PackageTags>
+    <PackageReleaseNotes>$(RELEASE_NOTES)</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
