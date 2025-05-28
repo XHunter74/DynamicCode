@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace DynamicCode;
+namespace DynamicCode.Compiler;
 
 internal class CompilerUtils
 {

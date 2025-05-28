@@ -2,24 +2,16 @@
 using Microsoft.CodeAnalysis.CSharp;
 using System.Reflection;
 
-namespace DynamicCode;
+namespace DynamicCode.Compiler;
 
-public class SimpleDynamicCompiler
+public class DynamicCompiler
 {
-    public static Func<int, int, int> CompileFunction(string body)
+    public static T CompileFunctionNew<T>(string code) where T : Delegate
     {
-        // Source code for a class with a static method Calculate
-        string code = $@"
-            using System;
-            public static class DynamicClass
-            {{
-                public static int Calculate(int x, int y)
-                {{
-                    {body}
-                }}
-            }}";
-
         var syntaxTree = CSharpSyntaxTree.ParseText(code);
+        var className = CompilerUtils.ExtractSingleClassName(syntaxTree);
+        var methodName = CompilerUtils.ExtractMethodNameMatchingDelegate<T>(syntaxTree);
+
         var references = AppDomain.CurrentDomain.GetAssemblies()
             .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
             .Select(a => MetadataReference.CreateFromFile(a.Location))
@@ -33,18 +25,26 @@ public class SimpleDynamicCompiler
         );
 
         using var ms = new MemoryStream();
+
         var result = compilation.Emit(ms);
+
         if (!result.Success)
         {
             var errors = string.Join(Environment.NewLine, result.Diagnostics.Select(d => d.ToString()));
-            throw new Exception("Compilation failed:\n" + errors);
+            throw new InvalidOperationException("Compilation failed:\n" + errors);
         }
 
         ms.Seek(0, SeekOrigin.Begin);
         var asm = Assembly.Load(ms.ToArray());
-        var type = asm.GetType("DynamicClass");
-        var method = type!.GetMethod("Calculate", BindingFlags.Public | BindingFlags.Static);
+        var type = asm.GetType(className);
+        var method = type!.GetMethod(methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
 
-        return (Func<int, int, int>)method!.CreateDelegate(typeof(Func<int, int, int>));
+        if (method == null)
+        {
+            throw new MissingMethodException($"Method '{methodName}' not found in dynamic class.");
+        }
+
+        return (T)method.CreateDelegate(typeof(T), null);
     }
+
 }

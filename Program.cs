@@ -1,4 +1,4 @@
-﻿using DynamicCode;
+﻿using DynamicCode.Compiler;
 
 var code = @"
             using System;
@@ -29,7 +29,7 @@ code = @"
           }
 ";
 
-var stringFn=DynamicCode.DynamicCompiler.CompileFunctionNew<Func<string, string, string>>(code);
+var stringFn=DynamicCompiler.CompileFunctionNew<Func<string, string, string>>(code);
 
 var stringResult = stringFn("Hello", "World");
 
