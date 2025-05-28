@@ -1,4 +1,5 @@
-﻿using DynamicCode.Compiler;
+﻿using DynamicCode.Builder;
+using DynamicCode.Compiler;
 
 var code = @"
             using System;

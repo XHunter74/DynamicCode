@@ -1,4 +1,4 @@
-﻿namespace DynamicCode.Compiler;
+﻿namespace DynamicCode.Builder;
 
 public class DelegateTypeBuilder
 {
