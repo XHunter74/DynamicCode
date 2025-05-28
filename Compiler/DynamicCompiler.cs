@@ -46,4 +46,9 @@ public class DynamicCompiler
 
         return Delegate.CreateDelegate(delegateType, method);
     }
+
+    public static T CompileFunctionNew<T>(string code) where T : Delegate
+    {
+        return (T)CompileFunctionNew(typeof(T), code);
+    }
 }

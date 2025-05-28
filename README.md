@@ -42,6 +42,14 @@ var intResult = (int)intFn.DynamicInvoke(7, 6);
 
 Console.WriteLine($"Function body:\r\n'{code}'");
 Console.WriteLine($"Function result is: {intResult}");
+
+var intFn1 = DynamicCompiler.CompileFunctionNew<Func<int, int, int>>(code);
+
+intResult = intFn1(8, 9);
+
+Console.WriteLine($"Function body:\r\n'{code}'");
+Console.WriteLine("x = 8, y = 9");
+Console.WriteLine($"Function result is: {intResult}");
 ```
 
 ## Project Structure

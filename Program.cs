@@ -22,6 +22,15 @@ var intFn = DynamicCompiler.CompileFunctionNew(intFuncType, code);
 var intResult = (int)intFn.DynamicInvoke(7, 6);
 
 Console.WriteLine($"Function body:\r\n'{code}'");
+Console.WriteLine("x = 7, y = 6");
+Console.WriteLine($"Function result is: {intResult}");
+
+var intFn1 = DynamicCompiler.CompileFunctionNew<Func<int, int, int>>(code);
+
+intResult = intFn1(8, 9);
+
+Console.WriteLine($"Function body:\r\n'{code}'");
+Console.WriteLine("x = 8, y = 9");
 Console.WriteLine($"Function result is: {intResult}");
 
 code = @"
@@ -46,5 +55,6 @@ var stringFn = DynamicCompiler.CompileFunctionNew(stringFuncType, code);
 var stringResult = (string)stringFn.DynamicInvoke("Hello", "World");
 
 Console.WriteLine($"Function body:\r\n'{code}'");
+Console.WriteLine("x = 'Hello', y = 'World'");
 Console.WriteLine($"Function result is: {stringResult}");
 
