@@ -31,7 +31,7 @@ public class DynamicCompiler
         if (!result.Success)
         {
             var errors = string.Join(Environment.NewLine, result.Diagnostics.Select(d => d.ToString()));
-            throw new Exception("Compilation failed:\n" + errors);
+            throw new InvalidOperationException("Compilation failed:\n" + errors);
         }
 
         ms.Seek(0, SeekOrigin.Begin);
@@ -41,7 +41,7 @@ public class DynamicCompiler
 
         if (method == null)
         {
-            throw new Exception($"Method '{methodName}' not found in dynamic class.");
+            throw new MissingMethodException($"Method '{methodName}' not found in dynamic class.");
         }
 
         return (T)method.CreateDelegate(typeof(T), null);

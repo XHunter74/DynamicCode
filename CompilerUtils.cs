@@ -10,9 +10,9 @@ internal class CompilerUtils
         var root = syntaxTree.GetRoot();
         var classDecls = root.DescendantNodes().OfType<ClassDeclarationSyntax>().ToList();
         if (classDecls.Count == 0)
-            throw new Exception("No class declaration found in code.");
+            throw new InvalidOperationException("No class declaration found in code.");
         if (classDecls.Count > 1)
-            throw new Exception("More than one class declaration found in code.");
+            throw new InvalidOperationException("More than one class declaration found in code.");
         return classDecls[0].Identifier.Text;
     }
 
@@ -48,7 +48,7 @@ internal class CompilerUtils
             if (match)
                 return method.Identifier.Text;
         }
-        throw new Exception($"No method matching delegate {typeof(T).Name} found in syntax tree.");
+        throw new InvalidOperationException($"No method matching delegate {typeof(T).Name} found in syntax tree.");
     }
 
     private static readonly Dictionary<string, string> CSharpToClrTypeMap = new()
