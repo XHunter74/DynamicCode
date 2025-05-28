@@ -11,11 +11,17 @@ var code = @"
             }
 ";
 
-var intFn = DynamicCompiler.CompileFunctionNew<Func<int, int, int>>(code);
+var intFuncType = DelegateTypeBuilder.Create()
+    .AddInput(typeof(int))
+    .AddInput(typeof(int))
+    .AddOutput(typeof(int))
+    .BuildFuncType();
 
-var intResult = intFn(7, 6);
+var intFn = DynamicCompiler.CompileFunctionNew(intFuncType, code);
 
-Console.WriteLine($"Function body:\r\n '{code}'");
+var intResult = (int)intFn.DynamicInvoke(7, 6);
+
+Console.WriteLine($"Function body:\r\n'{code}'");
 Console.WriteLine($"Function result is: {intResult}");
 
 code = @"
@@ -29,10 +35,16 @@ code = @"
           }
 ";
 
-var stringFn=DynamicCompiler.CompileFunctionNew<Func<string, string, string>>(code);
+var stringFuncType = DelegateTypeBuilder.Create()
+    .AddInput(typeof(string))
+    .AddInput(typeof(string))
+    .AddOutput(typeof(string))
+    .BuildFuncType();
 
-var stringResult = stringFn("Hello", "World");
+var stringFn = DynamicCompiler.CompileFunctionNew(stringFuncType, code);
 
-Console.WriteLine($"Function body:\r\n '{code}'");
+var stringResult = (string)stringFn.DynamicInvoke("Hello", "World");
+
+Console.WriteLine($"Function body:\r\n'{code}'");
 Console.WriteLine($"Function result is: {stringResult}");
 

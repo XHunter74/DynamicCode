@@ -16,9 +16,9 @@ internal class CompilerUtils
         return classDecls[0].Identifier.Text;
     }
 
-    public static string ExtractMethodNameMatchingDelegate<T>(SyntaxTree syntaxTree) where T : Delegate
+    public static string ExtractMethodNameMatchingDelegate(Type delegateType,SyntaxTree syntaxTree)
     {
-        var delegateInvoke = typeof(T).GetMethod("Invoke");
+        var delegateInvoke = delegateType.GetMethod("Invoke");
         var delegateParams = delegateInvoke.GetParameters();
         var delegateReturn = delegateInvoke.ReturnType;
         var root = syntaxTree.GetRoot();
@@ -48,7 +48,7 @@ internal class CompilerUtils
             if (match)
                 return method.Identifier.Text;
         }
-        throw new InvalidOperationException($"No method matching delegate {typeof(T).Name} found in syntax tree.");
+        throw new InvalidOperationException($"No method matching delegate {delegateType.Name} found in syntax tree.");
     }
 
     private static readonly Dictionary<string, string> CSharpToClrTypeMap = new()

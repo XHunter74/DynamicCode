@@ -6,11 +6,11 @@ namespace DynamicCode.Compiler;
 
 public class DynamicCompiler
 {
-    public static T CompileFunctionNew<T>(string code) where T : Delegate
+    public static Delegate CompileFunctionNew(Type delegateType, string code)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(code);
         var className = CompilerUtils.ExtractSingleClassName(syntaxTree);
-        var methodName = CompilerUtils.ExtractMethodNameMatchingDelegate<T>(syntaxTree);
+        var methodName = CompilerUtils.ExtractMethodNameMatchingDelegate(delegateType, syntaxTree);
 
         var references = AppDomain.CurrentDomain.GetAssemblies()
             .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
@@ -44,7 +44,6 @@ public class DynamicCompiler
             throw new MissingMethodException($"Method '{methodName}' not found in dynamic class.");
         }
 
-        return (T)method.CreateDelegate(typeof(T), null);
+        return Delegate.CreateDelegate(delegateType, method);
     }
-
 }

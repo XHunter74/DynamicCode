@@ -30,24 +30,15 @@ var code = @"
     }
 ";
 
-var intFn = DynamicCompiler.CompileFunctionNew<Func<int, int, int>>(code);
-var intResult = intFn(7, 6);
+var intFuncType = DelegateTypeBuilder.Create()
+    .AddInput(typeof(int))
+    .AddInput(typeof(int))
+    .AddOutput(typeof(int))
+    .BuildFuncType();
+
+var intFn = DynamicCompiler.CompileFunctionNew(intFuncType, code);
+
 Console.WriteLine($"Function result is: {intResult}");
-
-code = @"
-    using System;
-    public static class DynamicClass
-    {
-        public static string Calculate(string x, string y)
-        {
-            return x + \" \" + y;
-        }
-    }
-";
-
-var stringFn = DynamicCompiler.CompileFunctionNew<Func<string, string, string>>(code);
-var stringResult = stringFn("Hello", "World");
-Console.WriteLine($"Function result is: {stringResult}");
 ```
 
 ## Project Structure
