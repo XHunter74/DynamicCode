@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicCode", "DynamicCode\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamiCode.TestApp", "DynamiCode.TestApp\DynamiCode.TestApp.csproj", "{90B08309-C46F-4EBC-8F0E-527F0F380E0C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicCode.Test", "DynamicCode.Test\DynamicCode.Test.csproj", "{B5D3E359-4045-4BF3-B9E4-D14382EED017}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{90B08309-C46F-4EBC-8F0E-527F0F380E0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90B08309-C46F-4EBC-8F0E-527F0F380E0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90B08309-C46F-4EBC-8F0E-527F0F380E0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5D3E359-4045-4BF3-B9E4-D14382EED017}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5D3E359-4045-4BF3-B9E4-D14382EED017}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5D3E359-4045-4BF3-B9E4-D14382EED017}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5D3E359-4045-4BF3-B9E4-D14382EED017}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
