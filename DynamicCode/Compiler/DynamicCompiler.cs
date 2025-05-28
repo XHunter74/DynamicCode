@@ -6,7 +6,7 @@ namespace DynamicCode.Compiler;
 
 public class DynamicCompiler
 {
-    public static Delegate CompileFunctionNew(Type delegateType, string code)
+    public static Delegate CompileFunction(Type delegateType, string code)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(code);
         var className = CompilerUtils.ExtractSingleClassName(syntaxTree);
@@ -47,8 +47,8 @@ public class DynamicCompiler
         return Delegate.CreateDelegate(delegateType, method);
     }
 
-    public static T CompileFunctionNew<T>(string code) where T : Delegate
+    public static T CompileFunction<T>(string code) where T : Delegate
     {
-        return (T)CompileFunctionNew(typeof(T), code);
+        return (T)CompileFunction(typeof(T), code);
     }
 }

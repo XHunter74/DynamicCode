@@ -18,7 +18,7 @@ var intFuncType = DelegateTypeBuilder.Create()
     .AddOutput(typeof(int))
     .BuildFuncType();
 
-var intFn = DynamicCompiler.CompileFunctionNew(intFuncType, code);
+var intFn = DynamicCompiler.CompileFunction(intFuncType, code);
 
 var intResult = (int)intFn.DynamicInvoke(7, 6);
 
@@ -26,7 +26,7 @@ Console.WriteLine($"Function body:\r\n'{code}'");
 Console.WriteLine("x = 7, y = 6");
 Console.WriteLine($"Function result is: {intResult}");
 
-var intFn1 = DynamicCompiler.CompileFunctionNew<Func<int, int, int>>(code);
+var intFn1 = DynamicCompiler.CompileFunction<Func<int, int, int>>(code);
 
 intResult = intFn1(8, 9);
 
@@ -51,7 +51,7 @@ var stringFuncType = DelegateTypeBuilder.Create()
     .AddOutput(typeof(string))
     .BuildFuncType();
 
-var stringFn = DynamicCompiler.CompileFunctionNew(stringFuncType, code);
+var stringFn = DynamicCompiler.CompileFunction(stringFuncType, code);
 
 var stringResult = (string)stringFn.DynamicInvoke("Hello", "World");
 
