@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-    # tags:
-    #   - "v*"
+    tags:
+      - "v*"
 
 jobs:
   build-test-publish:
@@ -44,11 +44,11 @@ jobs:
     - name: Update version and release notes in .csproj (only on tag)
       if: env.IS_TAG == 'true'
       run: |
-        sed -i "s|<Version>.*</Version>|<Version>${VERSION}</Version>|" CQRSMediatr/CQRSMediatr.csproj
+        sed -i "s|<Version>.*</Version>|<Version>${VERSION}</Version>|" DynamicCode/DynamicCode.csproj
 
         if [ "$RELEASE_NOTES_EXISTS" = "true" ]; then
           RELEASE_NOTES_ESCAPED=$(printf '%s\n' "$RELEASE_NOTES" | sed 's/[&/\]/\\&/g')
-          sed -i "s|<PackageReleaseNotes>.*</PackageReleaseNotes>|<PackageReleaseNotes>${RELEASE_NOTES_ESCAPED}</PackageReleaseNotes>|" CQRSMediatr/CQRSMediatr.csproj
+          sed -i "s|<PackageReleaseNotes>.*</PackageReleaseNotes>|<PackageReleaseNotes>${RELEASE_NOTES_ESCAPED}</PackageReleaseNotes>|" DynamicCode/DynamicCode.csproj
         fi
 
     - name: Restore dependencies
@@ -63,23 +63,23 @@ jobs:
     - name: Run tests
       run: dotnet test DynamicCode.Test/DynamicCode.Test.csproj --configuration Release --no-build --verbosity normal
 
-    # - name: Pack NuGet package (only on tag)
-    #   if: env.IS_TAG == 'true'
-    #   run: |
-    #     if [ "$RELEASE_NOTES_EXISTS" = "true" ]; then
-    #       dotnet pack CQRSMediatr/CQRSMediatr.csproj --configuration Release --no-build \
-    #         -p:PackageVersion=$VERSION \
-    #         -p:PackageReleaseNotes="$RELEASE_NOTES"
-    #     else
-    #       dotnet pack CQRSMediatr/CQRSMediatr.csproj --configuration Release --no-build \
-    #         -p:PackageVersion=$VERSION
-    #     fi
+    - name: Pack NuGet package (only on tag)
+      if: env.IS_TAG == 'true'
+      run: |
+        if [ "$RELEASE_NOTES_EXISTS" = "true" ]; then
+          dotnet pack DynamicCode/DynamicCode.csproj --configuration Release --no-build \
+            -p:PackageVersion=$VERSION \
+            -p:PackageReleaseNotes="$RELEASE_NOTES"
+        else
+          dotnet pack DynamicCode/DynamicCode.csproj --configuration Release --no-build \
+            -p:PackageVersion=$VERSION
+        fi
 
-    # - name: Publish to NuGet (only on tag)
-    #   if: env.IS_TAG == 'true'
-    #   env:
-    #     NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-    #   run: |
-    #     dotnet nuget push CQRSMediatr/bin/Release/*.nupkg \
-    #       --api-key $NUGET_API_KEY \
-    #       --source https://api.nuget.org/v3/index.json
+    - name: Publish to NuGet (only on tag)
+      if: env.IS_TAG == 'true'
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: |
+        dotnet nuget push DynamicCode/bin/Release/*.nupkg \
+          --api-key $NUGET_API_KEY \
+          --source https://api.nuget.org/v3/index.json

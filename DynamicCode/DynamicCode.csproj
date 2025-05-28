@@ -4,7 +4,24 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>dynamic-code</PackageId>
+    <Title>Compiling and executing C# code from strings at runtime using Roslyn</Title>
+    <Authors>xhunter74</Authors>
+    <Description>The package for compiling and executing C# code from strings at runtime using Roslyn</Description>
+    <Copyright>xhunter74@gmail.com</Copyright>
+    <PackageProjectUrl>https://github.com/XHunter74/DynamicCode</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/XHunter74/DynamicCode</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Library, Roslyn, Dynamic-Code-Execution </PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
