@@ -1,5 +1,10 @@
 # DynamicCodeFromString
 
+[![NuGet](https://img.shields.io/nuget/v/dynamic-code.svg)](https://www.nuget.org/packages/dynamic-code)
+![.NET](https://img.shields.io/badge/.NET-8.0-blue)
+![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
+![Reasoning](https://img.shields.io/badge/reasoning-dynamic%20runtime%20C%23%20compilation-orange)
+
 A .NET 8 project for compiling and executing C# code from strings at runtime using Roslyn. This project demonstrates how to dynamically compile code, extract class and method information, and create delegates for runtime execution.
 
 ## Features
@@ -17,12 +22,8 @@ A .NET 8 project for compiling and executing C# code from strings at runtime usi
 
 ## Installation
 
-Install the package from NuGet:
-dotnet add package dynamic-code
-
-## Usage Example
-csharp
-using DynamicCode;
+Install the package from NuGet:dotnet add package dynamic-code
+## Usage Exampleusing DynamicCode;
 
 var code = @"
     using System;
@@ -57,7 +58,6 @@ intResult = intFn1(8, 9);
 Console.WriteLine($"Function body:\r\n'{code}'");
 Console.WriteLine("x = 8, y = 9");
 Console.WriteLine($"Function result is: {intResult}");
-
 ## Project Structure
 
 - `DynamicCode/Compiler/` - Core compiler and utility classes
@@ -70,9 +70,7 @@ Console.WriteLine($"Function result is: {intResult}");
 
 ## Running Tests
 
-To run the test suite:
-dotnet test
-
+To run the test suite:dotnet test
 ## License
 MIT License
 
