@@ -1,13 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace DynamicCode;
 
 internal class CompilerUtils
 {
+    public static string ExtractSingleClassName(SyntaxTree syntaxTree)
+    {
+        var root = syntaxTree.GetRoot();
+        var classDecls = root.DescendantNodes().OfType<ClassDeclarationSyntax>().ToList();
+        if (classDecls.Count == 0)
+            throw new Exception("No class declaration found in code.");
+        if (classDecls.Count > 1)
+            throw new Exception("More than one class declaration found in code.");
+        return classDecls[0].Identifier.Text;
+    }
+
+    public static string ExtractMethodNameMatchingDelegate<T>(SyntaxTree syntaxTree) where T : Delegate
+    {
+        var delegateInvoke = typeof(T).GetMethod("Invoke");
+        var delegateParams = delegateInvoke.GetParameters();
+        var delegateReturn = delegateInvoke.ReturnType;
+        var root = syntaxTree.GetRoot();
+        var methodDecls = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
+
+        foreach (var method in methodDecls)
+        {
+            var methodReturnType = method.ReturnType.ToString();
+            var clrReturnType = GetClrTypeName(methodReturnType);
+            if (clrReturnType != delegateReturn.Name && clrReturnType != delegateReturn.FullName)
+                continue;
+            var parameters = method.ParameterList.Parameters;
+            if (parameters.Count != delegateParams.Length)
+                continue;
+            bool match = true;
+            for (int i = 0; i < parameters.Count; i++)
+            {
+                var paramType = parameters[i].Type?.ToString();
+                var clrParamType = GetClrTypeName(paramType);
+                var delegateParamType = delegateParams[i].ParameterType;
+                if (clrParamType != delegateParamType.Name && clrParamType != delegateParamType.FullName)
+                {
+                    match = false;
+                    break;
+                }
+            }
+            if (match)
+                return method.Identifier.Text;
+        }
+        throw new Exception($"No method matching delegate {typeof(T).Name} found in syntax tree.");
+    }
+
     private static readonly Dictionary<string, string> CSharpToClrTypeMap = new()
     {
         {"bool", "Boolean"},
@@ -27,7 +70,7 @@ internal class CompilerUtils
         {"string", "String"}
     };
 
-    public static string GetClrTypeName(string csharpType)
+    private static string GetClrTypeName(string csharpType)
     {
         if (CSharpToClrTypeMap.TryGetValue(csharpType, out var clrName))
             return clrName;
