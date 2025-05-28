@@ -8,14 +8,19 @@ A .NET 8 project for compiling and executing C# code from strings at runtime usi
 - Match methods to delegate signatures
 - Create delegates for dynamically compiled methods
 - Example usage for both integer and string functions
+- Comprehensive test suite
+- Published as a NuGet package: `dynamic-code`
 
 ## Requirements
 - .NET 8 SDK
-- NuGet package: `Microsoft.CodeAnalysis.CSharp`
+- NuGet package: `dynamic-code` ([NuGet Gallery](https://www.nuget.org/packages/dynamic-code))
+
+## Installation
+
+Install the package from NuGet:
+dotnet add package dynamic-code
 
 ## Usage Example
-
-```
 csharp
 using DynamicCode;
 
@@ -36,29 +41,37 @@ var intFuncType = DelegateTypeBuilder.Create()
     .AddOutput(typeof(int))
     .BuildFuncType();
 
-var intFn = DynamicCompiler.CompileFunctionNew(intFuncType, code);
+var intFn = DynamicCompiler.CompileFunction(intFuncType, code);
 
 var intResult = (int)intFn.DynamicInvoke(7, 6);
 
 Console.WriteLine($"Function body:\r\n'{code}'");
 Console.WriteLine($"Function result is: {intResult}");
 
-// The same thing, but in the different way
+// The same thing, but in a different way
 
-var intFn1 = DynamicCompiler.CompileFunctionNew<Func<int, int, int>>(code);
+var intFn1 = DynamicCompiler.CompileFunction<Func<int, int, int>>(code);
 
 intResult = intFn1(8, 9);
 
 Console.WriteLine($"Function body:\r\n'{code}'");
 Console.WriteLine("x = 8, y = 9");
 Console.WriteLine($"Function result is: {intResult}");
-```
 
 ## Project Structure
-- `DynamicCompiler`: Main API for compiling code and creating delegates
-- `CompilerUtils`: Utilities for extracting class and method names from syntax trees
-- `SimpleDynamicCompiler`: Minimal example for compiling a specific function signature
+
+- `DynamicCode/Compiler/` - Core compiler and utility classes
+    - `DynamicCompiler`: Main API for compiling code and creating delegates
+    - `CompilerUtils`: Utilities for extracting class and method names from syntax trees
+    - `DelegateTypeBuilder`: Fluent builder for delegate types
+    - `SimpleDynamicCompiler`: Minimal example for compiling a specific function signature
+- `DynamicCode.Test/` - Unit tests for all major features
 - `Program.cs`: Example usage
+
+## Running Tests
+
+To run the test suite:
+dotnet test
 
 ## License
 MIT License
