@@ -21,7 +21,10 @@ A .NET 8 project for compiling and executing C# code from strings at runtime usi
 - NuGet package: `dynamic-code` ([NuGet Gallery](https://www.nuget.org/packages/dynamic-code))
 
 ## Installation
-Install the package from NuGet:dotnet add package dynamic-code
+Install the package from NuGet:
+```bash
+dotnet add package dynamic-code
+```
 
 ## Usage Example  
 ```csharp
@@ -74,7 +77,10 @@ Console.WriteLine($"Function result is: {intResult}");
 
 ## Running Tests
 
-To run the test suite:dotnet test
+To run the test suite:
+```bash
+dotnet test
+```
 
 ## License
 MIT License
