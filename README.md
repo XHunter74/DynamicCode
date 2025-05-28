@@ -43,6 +43,8 @@ var intResult = (int)intFn.DynamicInvoke(7, 6);
 Console.WriteLine($"Function body:\r\n'{code}'");
 Console.WriteLine($"Function result is: {intResult}");
 
+// The same thing, but in the different way
+
 var intFn1 = DynamicCompiler.CompileFunctionNew<Func<int, int, int>>(code);
 
 intResult = intFn1(8, 9);
