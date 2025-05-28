@@ -1,18 +1,38 @@
 ﻿using DynamicCode;
 
-var newBody = "return x * y;";
+var code = @"
+            using System;
+            public static class DynamicClass
+            {
+                public static int Calculate(int x, int y)
+                {
+                    return x * y;
+                }
+            }
+";
 
-var fn = DynamicCompiler.CompileFunctionNew<Func<int, int, int>>(newBody);
+var intFn = DynamicCompiler.CompileFunctionNew<Func<int, int, int>>(code);
 
-var result = fn(7, 6);
+var intResult = intFn(7, 6);
 
-Console.WriteLine($"Function body: {newBody}");
-Console.WriteLine($"Function result is: {result}");
+Console.WriteLine($"Function body:\r\n '{code}'");
+Console.WriteLine($"Function result is: {intResult}");
 
-newBody = "return x * y - 5;";
-fn = SimpleDynamicCompiler.CompileFunction(newBody);
+code = @"
+        using System;
+        public static class DynamicClass
+          {
+              public static string Calculate(string x, string y)
+              {
+                  return x + "" "" + y;
+              }
+          }
+";
 
-result = fn(7, 6);
+var stringFn=DynamicCode.DynamicCompiler.CompileFunctionNew<Func<string, string, string>>(code);
 
-Console.WriteLine($"Function body: {newBody}");
-Console.WriteLine($"Function result is: {result}");
+var stringResult = stringFn("Hello", "World");
+
+Console.WriteLine($"Function body:\r\n '{code}'");
+Console.WriteLine($"Function result is: {stringResult}");
+
