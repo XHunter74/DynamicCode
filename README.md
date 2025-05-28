@@ -21,9 +21,11 @@ A .NET 8 project for compiling and executing C# code from strings at runtime usi
 - NuGet package: `dynamic-code` ([NuGet Gallery](https://www.nuget.org/packages/dynamic-code))
 
 ## Installation
-
 Install the package from NuGet:dotnet add package dynamic-code
-## Usage Exampleusing DynamicCode;
+
+## Usage Example  
+```csharp
+using DynamicCode;
 
 var code = @"
     using System;
@@ -58,6 +60,8 @@ intResult = intFn1(8, 9);
 Console.WriteLine($"Function body:\r\n'{code}'");
 Console.WriteLine("x = 8, y = 9");
 Console.WriteLine($"Function result is: {intResult}");
+```
+
 ## Project Structure
 
 - `DynamicCode/Compiler/` - Core compiler and utility classes
@@ -71,6 +75,7 @@ Console.WriteLine($"Function result is: {intResult}");
 ## Running Tests
 
 To run the test suite:dotnet test
+
 ## License
 MIT License
 
