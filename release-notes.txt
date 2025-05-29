@@ -1,1 +1,4 @@
+2025-05-29 Refactored and extended GetClrTypeName.
+           Added XML documentations.
+           Extended tests.
 2025-05-28 Initial version
