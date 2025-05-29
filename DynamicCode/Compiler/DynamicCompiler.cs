@@ -4,8 +4,19 @@ using System.Reflection;
 
 namespace DynamicCode.Compiler;
 
+/// <summary>
+/// Provides methods for compiling and executing C# code from strings at runtime using Roslyn.
+/// </summary>
 public class DynamicCompiler
 {
+    /// <summary>
+    /// Compiles the provided C# code and creates a delegate of the specified type for a matching static or instance method.
+    /// </summary>
+    /// <param name="delegateType">The delegate type to match the method signature.</param>
+    /// <param name="code">The C# code as a string containing a class and method to compile.</param>
+    /// <returns>A delegate instance that can be invoked to execute the compiled method.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if compilation fails.</exception>
+    /// <exception cref="MissingMethodException">Thrown if a matching method is not found in the compiled class.</exception>
     public static Delegate CompileFunction(Type delegateType, string code)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(code);
@@ -47,6 +58,14 @@ public class DynamicCompiler
         return Delegate.CreateDelegate(delegateType, method);
     }
 
+    /// <summary>
+    /// Compiles the provided C# code and creates a strongly-typed delegate for a matching static or instance method.
+    /// </summary>
+    /// <typeparam name="T">The delegate type to match the method signature.</typeparam>
+    /// <param name="code">The C# code as a string containing a class and method to compile.</param>
+    /// <returns>A strongly-typed delegate instance that can be invoked to execute the compiled method.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if compilation fails.</exception>
+    /// <exception cref="MissingMethodException">Thrown if a matching method is not found in the compiled class.</exception>
     public static T CompileFunction<T>(string code) where T : Delegate
     {
         return (T)CompileFunction(typeof(T), code);
