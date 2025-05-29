@@ -6,19 +6,8 @@ namespace DynamicCode.Compiler;
 
 public class SimpleDynamicCompiler
 {
-    public static Func<int, int, int> CompileFunction(string body)
+    public static T CompileFunction<T>(string code, string className, string methodName) where T : Delegate
     {
-        // Source code for a class with a static method Calculate
-        string code = $@"
-            using System;
-            public static class DynamicClass
-            {{
-                public static int Calculate(int x, int y)
-                {{
-                    {body}
-                }}
-            }}";
-
         var syntaxTree = CSharpSyntaxTree.ParseText(code);
         var references = AppDomain.CurrentDomain.GetAssemblies()
             .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
@@ -26,7 +15,7 @@ public class SimpleDynamicCompiler
             .Cast<MetadataReference>();
 
         var compilation = CSharpCompilation.Create(
-            assemblyName: "DynamicAssembly",
+            assemblyName: Constants.AssemblyName,
             syntaxTrees: [syntaxTree],
             references: references,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
@@ -42,9 +31,9 @@ public class SimpleDynamicCompiler
 
         ms.Seek(0, SeekOrigin.Begin);
         var asm = Assembly.Load(ms.ToArray());
-        var type = asm.GetType("DynamicClass");
-        var method = type!.GetMethod("Calculate", BindingFlags.Public | BindingFlags.Static);
+        var type = asm.GetType(className);
+        var method = type!.GetMethod(methodName, BindingFlags.Public | BindingFlags.Static);
 
-        return (Func<int, int, int>)method!.CreateDelegate(typeof(Func<int, int, int>));
+        return (T)method!.CreateDelegate(typeof(T));
     }
 }
