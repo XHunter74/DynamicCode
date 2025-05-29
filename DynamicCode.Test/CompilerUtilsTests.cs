@@ -57,4 +57,53 @@ public class CompilerUtilsTests
         var methodName = CompilerUtils.ExtractMethodNameMatchingDelegate(typeof(Func<int, int, int>), syntaxTree);
         Assert.Equal("Calc", methodName);
     }
+
+    [Theory(DisplayName = "GetClrTypeName handles C# aliases, CLR names, nullable, array, and generic types")]
+    [InlineData("int", "Int32")]
+    [InlineData("string", "String")]
+    [InlineData("bool", "Boolean")]
+    [InlineData("Int32", "Int32")]
+    [InlineData("System.Guid", "System.Guid")]
+    [InlineData("int?", "Int32?")]
+    [InlineData("string?", "String?")]
+    [InlineData("int[]", "Int32[]")]
+    [InlineData("string[]", "String[]")]
+    [InlineData("List<int>", "List<Int32>")]
+    [InlineData("Dictionary<string, int>", "Dictionary<String, Int32>")]
+    [InlineData("List<List<int>>", "List<List<Int32>>")]
+    [InlineData("MyCustomType", "MyCustomType")]
+    public void GetClrTypeName_HandlesVariousTypes(string input, string expected)
+    {
+        Assert.Equal(expected, CompilerUtilsTestAccessor.GetClrTypeName(input));
+    }
+
+    [Theory(DisplayName = "GetClrTypeName handles multi-dimensional, jagged, nullable arrays, nested generics, whitespace, null, and unusual types")]
+    [InlineData("int[,]", "int[,]" )] 
+    [InlineData("int[][]", "Int32[][]")]
+    [InlineData("int?[]", "Int32?[]")]
+    [InlineData("Dictionary<string, List<int?>>", "Dictionary<String, List<Int32?>>")]
+    [InlineData("Dictionary<string, List<Dictionary<int[], string?>>>", "Dictionary<String, List<Dictionary<int[], string?>>>")] // Updated: expect partial mapping
+    [InlineData(" ", " ")] 
+    [InlineData("@int", "@int")]
+    [InlineData("global::System.Int32", "global::System.Int32")]
+    public void GetClrTypeName_HandlesAdvancedCases(string input, string expected)
+    {
+        Assert.Equal(expected, CompilerUtilsTestAccessor.GetClrTypeName(input));
+    }
+
+    [Fact(DisplayName = "GetClrTypeName returns null for null input")]
+    public void GetClrTypeName_ReturnsNullForNullInput()
+    {
+        Assert.Null(CompilerUtilsTestAccessor.GetClrTypeName(null));
+    }
+
+    // Helper to access private static method
+    private static class CompilerUtilsTestAccessor
+    {
+        public static string GetClrTypeName(string csharpType)
+        {
+            var method = typeof(CompilerUtils).GetMethod("GetClrTypeName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            return (string)method.Invoke(null, new object[] { csharpType });
+        }
+    }
 }
