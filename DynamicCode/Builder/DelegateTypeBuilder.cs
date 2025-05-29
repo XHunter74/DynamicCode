@@ -5,7 +5,7 @@
 /// </summary>
 public class DelegateTypeBuilder
 {
-    private readonly List<Type> _inputs = new();
+    private readonly List<Type> _inputs = [];
     private Type? _output;
 
     private DelegateTypeBuilder() { }

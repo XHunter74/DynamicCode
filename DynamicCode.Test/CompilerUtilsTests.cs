@@ -1,10 +1,14 @@
-// Ignore Spelling: Utils
+// Ignore Spelling: Utils Clr csharp
 
 using Microsoft.CodeAnalysis.CSharp;
 using DynamicCode.Compiler;
 
 namespace DynamicCode.Test;
 
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8603 // Possible null reference return.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 public class CompilerUtilsTests
 {
     [Fact(DisplayName = "ExtractSingleClassName returns class name for single class")]
@@ -103,7 +107,12 @@ public class CompilerUtilsTests
         public static string GetClrTypeName(string csharpType)
         {
             var method = typeof(CompilerUtils).GetMethod("GetClrTypeName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+
             return (string)method.Invoke(null, new object[] { csharpType });
         }
     }
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8603 // Possible null reference return.
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 }

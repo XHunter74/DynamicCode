@@ -37,8 +37,8 @@ public class CompilerUtils
     /// <exception cref="MissingMethodException">Thrown if no matching method is found.</exception>
     public static string ExtractMethodNameMatchingDelegate(Type delegateType, SyntaxTree syntaxTree)
     {
-        var delegateInvoke = delegateType.GetMethod("Invoke");
-        var delegateParams = delegateInvoke.GetParameters();
+        var delegateInvoke = delegateType.GetMethod(Constants.InvokeMethodName);
+        var delegateParams = delegateInvoke!.GetParameters();
         var delegateReturn = delegateInvoke.ReturnType;
         var root = syntaxTree.GetRoot();
         var methodDecls = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
@@ -56,6 +56,11 @@ public class CompilerUtils
             for (int i = 0; i < parameters.Count; i++)
             {
                 var paramType = parameters[i].Type?.ToString();
+                if (paramType == null)
+                {
+                    match = false;
+                    break;
+                }
                 var clrParamType = GetClrTypeName(paramType);
                 var delegateParamType = delegateParams[i].ParameterType;
                 if (clrParamType != delegateParamType.Name && clrParamType != delegateParamType.FullName)
@@ -101,7 +106,7 @@ public class CompilerUtils
             return csharpType;
 
         // Handle nullable types (e.g., int?)
-        if (csharpType.EndsWith("?"))
+        if (csharpType.EndsWith('?'))
         {
             var baseType = csharpType.TrimEnd('?');
             var clrBase = GetClrTypeName(baseType);
